@@ -30,4 +30,4 @@ app.post('/api/notes', (req, res) => {
     res.json(newNote);
 });
 
-app.listen(PORT, () => console.log(`Listening at port ${PORT}`));
+app.listen(PORT, () => console.log(`Listening at port http://localhost:${PORT}`));
