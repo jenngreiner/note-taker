@@ -3,7 +3,7 @@ const express = require('express');
 const path = require('path')
 const fs = require('fs');
 const app = express();
-var PORT = process.env.PORT || 3000;
+var PORT = process.env.PORT || 8080;
 
 // Sets up the Express app to handle data parsing
 app.use(express.urlencoded({ extended: true }));
@@ -26,6 +26,10 @@ app.get('/', (req, res) => res.sendFile(path.join(__dirname, '/public/index.html
 app.get('/api/notes', (req, res) => {
     // read the db.json file
     let noteArray = JSON.parse(fs.readFileSync(dbPath, 'utf8'));
+    // assign an id value to each item in noteArray
+    noteArray.forEach((note, index) => {
+        note.id = index + 1;
+    })
     //return saved notes as json
     return res.json(noteArray);
 });
@@ -38,13 +42,18 @@ app.post('/api/notes', (req, res) => {
     // read all of the existing notes
     var existingNotes = fs.readFileSync('./db/db.json', 'utf8');
 
-    // assign each note a unique id - with a forEach
-
     // convert string into JSON object
     let allNotes = JSON.parse(existingNotes);
 
+
     // add the new note to the existingNotes array
     allNotes.push(req.body);
+    console.log(allNotes);
+    // if the array is not null (empty) assign each note a unique id
+    if (!allNotes) {
+        // assign id based on index and array length
+        allNotes[allNotes.length].id = allNotes.length;
+    };
 
     // stringify object so writefile can read it
     fs.writeFileSync('./db/db.json', JSON.stringify(allNotes));
