@@ -3,12 +3,13 @@ const express = require('express');
 const path = require('path')
 const fs = require('fs');
 const app = express();
-var PORT = process.env.PORT || 3000;
+var PORT = process.env.PORT || 8080;
+const { v4: uuidv4 } = require('uuid');
 
 // Sets up the Express app to handle data parsing
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-// app.use(express.static('public'));
+app.use(express.static('public'));
 
 
 // The following HTML routes should be created:
@@ -29,7 +30,7 @@ app.get('/api/notes', (req, res) => {
     // assign an id value to each item in noteArray
     noteArray.forEach((note, index) => {
         note.id = index + 1;
-    })
+    });
     //return saved notes as json
     return res.json(noteArray);
 });
@@ -44,18 +45,13 @@ app.post('/api/notes', (req, res) => {
     // Convert string into JSON object
     let allNotes = JSON.parse(existingNotes);
 
+let newNote = req.body;
+newNote.id = uuidv4();
     // Add the new note to the existingNotes array
-    allNotes.push(req.body);
+    allNotes.push(newNote);
     console.log(allNotes);
-    // If the array is not null (empty)...
-    if (!allNotes) {
-        // ...Assign id based on index and array length
-        allNotes[allNotes.length].id = allNotes.length;
-    };
-
     // Stringify object so writeFileSync can read it
     fs.writeFileSync('./db/db.json', JSON.stringify(allNotes));
-
     res.json(req.body);
 });
 
@@ -76,6 +72,7 @@ app.delete('/api/notes/:id', (req, res) => {
     var existingNotes = JSON.parse(fs.readFileSync('./db/db.json', 'utf8'));
     // Filter notes that do NOT match the id above into a new array
     const savedNotes = existingNotes.filter(note => note.id !== id);
+    console.log(savedNotes);
     // Stringify object so writeFileSync can read it
     // Overwrite db.json with the new array, not including the deleted note.
     fs.writeFileSync('./db/db.json', JSON.stringify(savedNotes));
