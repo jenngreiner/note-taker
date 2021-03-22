@@ -4,7 +4,6 @@
   "description": "### Table of Contents: * [Deployed Site](#deployed-site) * [User Story](#user-story) * [Description](#description) * [Usage](#Usage) * [Mock-Up](#Mock-Up)",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
   "repository": {
