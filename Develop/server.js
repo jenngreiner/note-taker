@@ -3,7 +3,7 @@ const express = require('express');
 const path = require('path')
 const fs = require('fs');
 const app = express();
-var PORT = process.env.PORT || 8080;
+var PORT = process.env.PORT || 3000;
 
 // Sets up the Express app to handle data parsing
 app.use(express.urlencoded({ extended: true }));
@@ -35,27 +35,25 @@ app.get('/api/notes', (req, res) => {
 });
 
 // POST requests
-// * `POST /api/notes` should receive a new note to save on the request body, add it to the `db.json` file, and then return the new note to the client. You'll need to find a way to give each note a unique id when it's saved (look into `npm` packages that could do this for you).
+// * `POST /api/notes` should receive a new note to save on the request body, add it to the `db.json` file, and then return the new note to the client.
 app.post('/api/notes', (req, res) => {
-    // req.body hosts is equal to the JSON post sent from the user
-    // This works because of our body parsing middleware
-    // read all of the existing notes
+    // req.body hosts is equal to the JSON post sent from the user. This works because of our body-parsing middleware
+    // Read all of the existing notes
     var existingNotes = fs.readFileSync('./db/db.json', 'utf8');
 
-    // convert string into JSON object
+    // Convert string into JSON object
     let allNotes = JSON.parse(existingNotes);
 
-
-    // add the new note to the existingNotes array
+    // Add the new note to the existingNotes array
     allNotes.push(req.body);
     console.log(allNotes);
-    // if the array is not null (empty) assign each note a unique id
+    // If the array is not null (empty)...
     if (!allNotes) {
-        // assign id based on index and array length
+        // ...Assign id based on index and array length
         allNotes[allNotes.length].id = allNotes.length;
     };
 
-    // stringify object so writefile can read it
+    // Stringify object so writeFileSync can read it
     fs.writeFileSync('./db/db.json', JSON.stringify(allNotes));
 
     res.json(req.body);
@@ -69,13 +67,20 @@ app.post('/api/notes', (req, res) => {
 //     // no identifier changes all the notes
 // });
 
-// app.delete('/api/notes/:id', (req, res) => {
-//     const { author, value } = req.body;
-//     // delete a note --- which note?
-//     // re.params.id (/notes/:id)
-//     // req.query.id (/notes?id=)
-//     // no identifier deletes all the notes
-//     res.status(200).json({ message: "1 entry deleted." })
-// });
+// DELETE request
+app.delete('/api/notes/:id', (req, res) => {
+    // Get the id of the note to delete
+    const id = req.params.id;
+    console.log(req.params.id);
+    // Get the array of notes from db.json and convert string to JSON object
+    var existingNotes = JSON.parse(fs.readFileSync('./db/db.json', 'utf8'));
+    // Filter notes that do NOT match the id above into a new array
+    const savedNotes = existingNotes.filter(note => note.id !== id);
+    // Stringify object so writeFileSync can read it
+    // Overwrite db.json with the new array, not including the deleted note.
+    fs.writeFileSync('./db/db.json', JSON.stringify(savedNotes));
+    // Tell the user a note was deleted
+    res.status(200).json({ message: "1 entry deleted." })
+});
 
 app.listen(PORT, () => console.log(`Listening at port http://localhost:${PORT}`));
