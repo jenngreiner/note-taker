@@ -1,0 +1,25 @@
+{
+  "name": "11-note-taker",
+  "version": "1.0.0",
+  "description": "### Table of Contents: * [Deployed Site](#deployed-site) * [User Story](#user-story) * [Description](#description) * [Usage](#Usage) * [Mock-Up](#Mock-Up)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jenngreiner/note-taker.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jenngreiner/note-taker/issues"
+  },
+  "homepage": "https://github.com/jenngreiner/note-taker#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "fs": "0.0.1-security",
+    "path": "^0.12.7"
+  }
+}
