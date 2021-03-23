@@ -64,7 +64,8 @@ app.delete('/api/notes/:id', (req, res) => {
     // Get the array of notes from db.json and convert string to JSON object
     var existingNotes = JSON.parse(fs.readFileSync('./db/db.json', 'utf8'));
     // Filter notes that do NOT match the id above into a new array
-    const savedNotes = existingNotes.filter(note => note.id !== id);
+    // const savedNotes = existingNotes.filter(note => note.id !== id);
+    const savedNotes = existingNotes.splice(id);
     console.log(savedNotes);
     // Stringify object so writeFileSync can read it
     // Overwrite db.json with the new array, not including the deleted note.
